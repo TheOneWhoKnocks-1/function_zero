@@ -1,5 +1,6 @@
 from types import GeneratorType
 from string import ascii_letters
+from re import match
 
 class ChangeType:
 
@@ -18,12 +19,13 @@ class ChangeType:
         if isinstance(value, dict):
             lili = []
             for i, j in value.items():
-                x = f"{i} = {j}"
+                x = f"{i} = {j} "
                 lili.append(x)
-            return "".join(value)
+            return "".join(lili)
 
         if isinstance(value, GeneratorType):
-            return "".join(list(value))
+            x = list(value)
+            return "".join(map(str,x))
 
         raise ValueError(f"{value} cannot be converted to string.")
 
@@ -48,6 +50,27 @@ class ChangeType:
         raise ValueError(f"Could not turn the {value} to a list"
                          f"Please insert iterable objects")
 
+    @staticmethod
+    def turn_to_int(value):
+
+        try:
+            if isinstance(value, str):
+
+                return int(value)
+
+            if isinstance(value, list):
+                x = "".join((map(str, value)))
+                return int(x)
+
+            if isinstance(value, GeneratorType):
+                y = list(value)
+                x = "".join((map(str, y)))
+                return int(x)
+
+        except Exception:
+            raise ValueError(f"{value} cannot turn it's type to int!")
+
+        raise ValueError(f"{value} cannot turn it's type to int!!")
 
 class ListTools:
     """
@@ -144,7 +167,6 @@ class ListTools:
         except TypeError:
             raise TypeError("Bubble sort is not possible for multiple kinds of data!")
 
-
 class CustomCypher:
 
     @staticmethod
@@ -167,8 +189,52 @@ class CustomCypher:
             key2 = key * -1
             return CustomCypher.CeaserCypher(string, key2)
 
+    @staticmethod
+    def CC_brute_force(string=None):
+        ListTools.check_none(string)
+        result = []
+        new_word = ""
 
-print(CustomCypher.CeaserCypher({"ali": 2, "amir": 3},1,"e"))
+        if isinstance(string, str) and len(string) < 100:
+            for i in range(len(ascii_letters)):
+                for j in string:
+                    new_word += CustomCypher.CeaserCypher(j, i)
+
+                result.append(new_word)
+                new_word = ""
+
+        else:
+            raise TypeError("The input was either not string or too long.")
+        return result
+
+class RegEx:
+
+    @staticmethod
+    def is_email(st):
+        ListTools.check_none(st)
+        rules = r'^\w+@[a-zA-Z]+\.[a-zA-Z]{3}$'
+        st = ChangeType.turn_to_string(st)
+        if match(rules, st):
+            return True
+        return False
+
+    @staticmethod
+    def is_phonenum(st):
+        ListTools.check_none(st)
+        st = ChangeType.turn_to_string(st)
+        rules = r"^09[0-9]{9}$"
+        if match(rules, st):
+            return True
+        return False
+
+
+
+
+
+
+
+
+
 
 
 
